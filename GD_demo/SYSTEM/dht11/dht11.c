@@ -137,7 +137,4 @@ u8 DHT11_Init(void)
 	
 	DHT11_Reset();
 	return DHT11_CheckExist(); //初始化返回检测DHT11是否成功，0：成功 1：收不到应答信号，报错
-}
- 
- 
- 
+} 

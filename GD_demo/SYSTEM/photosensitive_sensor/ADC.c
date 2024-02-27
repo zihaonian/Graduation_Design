@@ -1,8 +1,75 @@
 #include "stm32f4xx.h"                
 #include "ADC.h"
 #include "delay.h"
- 
-//初始化ADC
+uint16_t Adc_Value[6] = {0};
+void adc_DMA_init(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    ADC_CommonInitTypeDef ADC_CommonInitStructure;
+    ADC_InitTypeDef ADC_InitStructure;
+    DMA_InitTypeDef DMA_InitStructure;
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); //使能ADC1时钟
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA |  RCC_AHB1Periph_DMA2, ENABLE);//使能引脚及DMA时钟
+
+    //引脚初始化
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6;  //PA2/3/6/7 初始化
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;//模拟输入
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;//不上下拉
+    GPIO_Init(GPIOA, &GPIO_InitStructure);//初始化
+
+    ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;//独立模式
+    ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;//两采样间延迟五个时钟
+    ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_1; //使能
+    ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;//预分频为4分频;ADCCLK=PCLK2/4=84/4=21Mhz,最好不要超过36Mhz 
+    ADC_CommonInit(&ADC_CommonInitStructure);//初始化
+
+
+    ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
+    ADC_InitStructure.ADC_ScanConvMode = ENABLE;
+    ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+    ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+    ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+    ADC_InitStructure.ADC_NbrOfConversion = 6;
+    ADC_Init(ADC1, &ADC_InitStructure);
+
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_480Cycles );    
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_480Cycles );
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_480Cycles );
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4, ADC_SampleTime_480Cycles );
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 5, ADC_SampleTime_480Cycles );
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 6, ADC_SampleTime_480Cycles );
+
+    DMA_DeInit(DMA2_Stream0);
+
+    DMA_InitStructure.DMA_Channel = DMA_Channel_0;
+	
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (u32)&ADC1->DR;
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+	
+    DMA_InitStructure.DMA_Memory0BaseAddr = (u32)&Adc_Value;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+	DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_HalfWord;
+
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+    DMA_InitStructure.DMA_BufferSize = 0X1E;
+
+
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Enable;
+    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+    DMA_Init(DMA2_Stream0, &DMA_InitStructure);
+
+    DMA_Cmd(DMA2_Stream0, ENABLE); 
+
+    ADC_DMARequestAfterLastTransferCmd(ADC1,ENABLE); 
+    ADC_DMACmd(ADC1, ENABLE); 
+	ADC_SoftwareStartConv(ADC1);
+}
+
+
 void Adc_Init(void)
 {	
 	ADC_CommonInitTypeDef ADC_CommonInitStructure;
@@ -121,5 +188,4 @@ u16 Get_Adc_Average(u8 ch,u8 times)
 	}
 	
 	return (temp_val-min-max)/(times-2); //返回平均值
-}
-  
+}  

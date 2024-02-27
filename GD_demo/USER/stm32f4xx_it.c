@@ -29,6 +29,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
+#include "FreeRTOS.h"					  
+#include "task.h" 
  
 
 /** @addtogroup Template_Project
@@ -107,14 +109,14 @@ void UsageFault_Handler(void)
   }
 }
 
-/**
-  * @brief  This function handles SVCall exception.
-  * @param  None
-  * @retval None
-  */
-void SVC_Handler(void)
-{
-}
+///**
+//  * @brief  This function handles SVCall exception.
+//  * @param  None
+//  * @retval None
+//  */
+//void SVC_Handler(void)
+//{
+//}
 
 /**
   * @brief  This function handles Debug Monitor exception.
@@ -125,25 +127,42 @@ void DebugMon_Handler(void)
 {
 }
 
-/**
-  * @brief  This function handles PendSVC exception.
-  * @param  None
-  * @retval None
-  */
-void PendSV_Handler(void)
-{
-}
+///**
+//  * @brief  This function handles PendSVC exception.
+//  * @param  None
+//  * @retval None
+//  */
+//void PendSV_Handler(void)
+//{
+//}
 
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
   * @retval None
   */
-void SysTick_Handler(void)
-{
+//extern void xPortSysTickHandler(void);
+//void SysTick_Handler(void)
+//{
+//     #if (INCLUDE_xTaskGetSchedulerState  == 1 )
+//      if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
+//      {
+//    #endif  /* INCLUDE_xTaskGetSchedulerState */  
+//        xPortSysTickHandler();
+//    #if (INCLUDE_xTaskGetSchedulerState  == 1 )
+//      }
+//    #endif  /* INCLUDE_xTaskGetSchedulerState */
+//}
+extern void xPortSysTickHandler(void);
  
+//systick中断服务函数,使用OS时用到
+void SysTick_Handler(void)
+{	
+    if(xTaskGetSchedulerState()!=taskSCHEDULER_NOT_STARTED)//系统已经运行
+    {
+        xPortSysTickHandler();	
+    }
 }
-
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

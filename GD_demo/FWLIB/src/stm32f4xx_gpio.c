@@ -522,7 +522,7 @@ void GPIO_ToggleBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
   * @param  GPIOx: where x can be (A..K) to select the GPIO peripheral for STM32F405xx/407xx and STM32F415xx/417xx devices
   *                      x can be (A..I) to select the GPIO peripheral for STM32F42xxx/43xxx devices.
   *                      x can be (A, B, C, D and H) to select the GPIO peripheral for STM32F401xx devices. 
-  * @param  GPIO 引脚源：指定 Alternate（交替）功能的引脚。
+  * @param  GPIO_PinSource: specifies the pin for the Alternate function.
   *         This parameter can be GPIO_PinSourcex where x can be (0..15).
   * @param  GPIO_AFSelection: selects the pin to used as Alternate function.
   *          This parameter can be one of the following values:
