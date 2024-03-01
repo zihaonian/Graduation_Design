@@ -40,6 +40,7 @@
 ..\obj\port.o: ..\FWLIB\inc\stm32f4xx_fsmc.h
 ..\obj\port.o: ..\SYSTEM\usart\usart.h
 ..\obj\port.o: C:\Keil_v5\k_5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\port.o: ..\SYSTEM\TIMER\timer.h
 ..\obj\port.o: ..\FreeRTOS\include\projdefs.h
 ..\obj\port.o: ..\FreeRTOS\include\portable.h
 ..\obj\port.o: ..\FreeRTOS\include\deprecated_definitions.h

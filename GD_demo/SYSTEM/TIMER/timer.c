@@ -1,26 +1,16 @@
 #include "timer.h"
 #include "usart.h"
 #include "led.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32F407开发板
-//定时器 驱动代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2014/5/4
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 	 
+volatile unsigned long long FreeRTOSRunTimeTicks;
 
-
-//通用定时器3中断初始化
-//arr：自动重装值。
-//psc：时钟预分频数
-//定时器溢出时间计算方法:Tout=((arr+1)*(psc+1))/Ft us.
-//Ft=定时器工作频率,单位:Mhz
-//这里使用的是定时器3!
+//初始化TIM3使其为FreeRTOS的时间统计提供时基
+void ConfigureTimeForRunTimeStats(void)
+{
+	//定时器3初始化，定时器时钟为84M，分频系数为84-1，所以定时器3的频率
+	//为84M/84=1M，自动重装载为50-1，那么定时器周期就是50us
+	FreeRTOSRunTimeTicks=0;
+	TIM3_Int_Init(50-1,84-1);	//初始化TIM3
+}
 void TIM3_Int_Init(u16 arr,u16 psc)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
@@ -75,12 +65,12 @@ void TIM5_Int_Init(u16 arr,u16 psc)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-//定时器3中断服务函数
+//定时器3中断服务函数,统计函数运行时间
 void TIM3_IRQHandler(void)
 {
 	if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) //溢出中断
 	{
-		
+		FreeRTOSRunTimeTicks++;
 	}
 	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);  //清除中断标志位
 }

@@ -48,6 +48,7 @@
 "..\obj\oled.o"
 "..\obj\adc.o"
 "..\obj\dht11.o"
+"..\obj\sgp30.o"
 "..\obj\croutine.o"
 "..\obj\event_groups.o"
 "..\obj\list.o"

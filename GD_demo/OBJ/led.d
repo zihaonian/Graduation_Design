@@ -37,3 +37,4 @@
 ..\obj\led.o: ..\FWLIB\inc\stm32f4xx_dcmi.h
 ..\obj\led.o: ..\FWLIB\inc\stm32f4xx_fsmc.h
 ..\obj\led.o: ..\SYSTEM\sys\sys.h
+..\obj\led.o: ..\SYSTEM\LED\led.h

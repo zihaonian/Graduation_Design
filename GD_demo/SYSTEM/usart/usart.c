@@ -10,7 +10,7 @@
 
   uint8_t rx_cnt = 0;   
   uint8_t usart_idle_flag = 0; 
-
+uint16_t USART_RX_STA;   
 
 #if 1
 #pragma import(__use_no_semihosting)             
@@ -90,43 +90,24 @@ void uart_init(u32 bound){
 
  
 
-void USART1_IRQHandler(void)
-	{
-	uint32_t data;	
-	if(USART_GetITStatus(USART1,USART_IT_RXNE))
-	{               
-		USART_RX_BUF[rx_cnt] = USART_ReceiveData(USART1);  
+
+
+void USART1_IRQHandler(void){
+	uint8_t i;  //打印接收的数据时用到
+	unsigned int data;
+	if(USART_GetITStatus(USART1,USART_IT_RXNE)){   //每当接收到1个字节，会产生USART_IT_RXNE中断              
+		USART_RX_BUF[rx_cnt] = USART_ReceiveData(USART1);  //把这个数据放到数组中去
 		rx_cnt++;
+		
 	}
-	
+//	//空闲中断函数
 	if(USART_GetITStatus(USART1,USART_IT_IDLE) != RESET)
 	{ 
-		data = USART1->SR;		 //清空闲中断
+		data = USART1->SR;		 // 清空闲中断
 		data = USART1->DR;        
-		usart_idle_flag = 1;	 
-//	if(strcmp(USART_RX_BUF, "led on") ==  0)
-//		{      //判断两个字符串相等
-//		 LED_Open();  //置低位，LED灯亮
-//		 memset(USART_RX_BUF,0,sizeof(USART_RX_BUF));   //清空数组
-//		 rx_cnt = 0;                          //清空索引置为0
-//		} 
-//	if(strcmp(USART_RX_BUF, "led off") == 0)
-//		{    //判断两个字符串相等
-//		 LED_Close();   //置高位，LED灯灭
-//		 memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); //清空数组
-//		 rx_cnt = 0;                        //清空索引置为0
-//		}
+		usart_idle_flag = 1;	// 产生空闲中断,没有用到
 	}
 }
-
-
-
-
-
-
-
-
-
 
 
 

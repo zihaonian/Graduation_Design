@@ -370,7 +370,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\USER;..\FWLIB\inc;..\FWLIB\src;..\SYSTEM\oled;..\SYSTEM\usart;..\SYSTEM\PWM;..\SYSTEM\TIMER;..\SYSTEM\LED;..\SYSTEM\KEY;..\SYSTEM\photosensitive_sensor;..\SYSTEM\dht11;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM4F</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\USER;..\FWLIB\inc;..\FWLIB\src;..\SYSTEM\oled;..\SYSTEM\usart;..\SYSTEM\PWM;..\SYSTEM\TIMER;..\SYSTEM\LED;..\SYSTEM\KEY;..\SYSTEM\photosensitive_sensor;..\SYSTEM\dht11;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM4F;..\SYSTEM\SGP32</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -672,6 +672,11 @@
               <FileName>dht11.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\dht11\dht11.c</FilePath>
+            </File>
+            <File>
+              <FileName>sgp30.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\SGP32\sgp30.c</FilePath>
             </File>
           </Files>
         </Group>
