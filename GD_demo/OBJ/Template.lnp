@@ -49,6 +49,10 @@
 "..\obj\adc.o"
 "..\obj\dht11.o"
 "..\obj\sgp30.o"
+"..\obj\ventilationcontrol.o"
+"..\obj\wateringcontrol.o"
+"..\obj\heatingcontrol.o"
+"..\obj\humidifiercontrol.o"
 "..\obj\croutine.o"
 "..\obj\event_groups.o"
 "..\obj\list.o"
@@ -57,6 +61,7 @@
 "..\obj\timers.o"
 "..\obj\heap_4.o"
 "..\obj\port.o"
+"..\obj\task_schedule.o"
 --library_type=microlib --strict --scatter "..\OBJ\Template.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

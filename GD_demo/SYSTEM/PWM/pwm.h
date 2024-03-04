@@ -5,6 +5,8 @@
 #include "sys.h"
 void TIM3_PWM_Init(u32 arr,u32 psc);//初始化PA6
 void TIM2_PWM_Init(u32 arr,u32 psc);
+void ServoControl_Open(void);
+void ServoControl_Close(void);
 #endif
 
 //	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2

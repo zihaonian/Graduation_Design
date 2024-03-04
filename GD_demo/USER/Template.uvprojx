@@ -370,7 +370,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\USER;..\FWLIB\inc;..\FWLIB\src;..\SYSTEM\oled;..\SYSTEM\usart;..\SYSTEM\PWM;..\SYSTEM\TIMER;..\SYSTEM\LED;..\SYSTEM\KEY;..\SYSTEM\photosensitive_sensor;..\SYSTEM\dht11;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM4F;..\SYSTEM\SGP32</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\USER;..\FWLIB\inc;..\FWLIB\src;..\SYSTEM\oled;..\SYSTEM\usart;..\SYSTEM\PWM;..\SYSTEM\TIMER;..\SYSTEM\LED;..\SYSTEM\KEY;..\SYSTEM\photosensitive_sensor;..\SYSTEM\dht11;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM4F;..\SYSTEM\SGP32;..\Task_Schedule;..\SYSTEM\HeatingControl;..\SYSTEM\HumidifierControl;..\SYSTEM\VentilationControl;..\SYSTEM\WateringControl</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -678,6 +678,26 @@
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\SGP32\sgp30.c</FilePath>
             </File>
+            <File>
+              <FileName>VentilationControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\VentilationControl\VentilationControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>WateringControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\WateringControl\WateringControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>HeatingControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\HeatingControl\HeatingControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>HumidifierControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\HumidifierControl\HumidifierControl.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -727,6 +747,16 @@
               <FileName>FreeRTOSConfig.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\FreeRTOS\include\FreeRTOSConfig.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Task_Schedule</GroupName>
+          <Files>
+            <File>
+              <FileName>Task_Schedule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task_Schedule\Task_Schedule.c</FilePath>
             </File>
           </Files>
         </Group>

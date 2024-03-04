@@ -60,3 +60,7 @@
 ..\obj\main.o: ..\FreeRTOS\include\list.h
 ..\obj\main.o: ..\FreeRTOS\include\semphr.h
 ..\obj\main.o: ..\FreeRTOS\include\queue.h
+..\obj\main.o: ..\SYSTEM\VentilationControl\VentilationControl.h
+..\obj\main.o: ..\SYSTEM\HeatingControl\HeatingControl.h
+..\obj\main.o: ..\SYSTEM\WateringControl\WateringControl.h
+..\obj\main.o: ..\SYSTEM\HumidifierControl\HumidifierControl.h

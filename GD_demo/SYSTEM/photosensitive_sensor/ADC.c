@@ -53,7 +53,7 @@ void adc_DMA_init(void)
 	DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_HalfWord;
 
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-    DMA_InitStructure.DMA_BufferSize = 4;
+    DMA_InitStructure.DMA_BufferSize = 2;
 
 
     DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;

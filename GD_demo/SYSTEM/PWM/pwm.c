@@ -1,16 +1,6 @@
 #include "pwm.h"
 #include "usart.h"
- 
-//////////////////////////////////////////////////////////////////////////////////	 
-//STM32F4工程模板-库函数版本
-//淘宝店铺：http://mcudev.taobao.com								  
-////////////////////////////////////////////////////////////////////////////////// 	 
 
-
-//TIM3 PWM部分初始化 
-//PWM输出初始化
-//arr：自动重装值
-//psc：时钟预分频数 
 //A6
 void TIM3_PWM_Init(u32 arr,u32 psc)
 {		 					 
@@ -100,4 +90,11 @@ void TIM2_PWM_Init(u32 arr,u32 psc)
 	TIM_SetCompare1(TIM2,1000);
 }
 
-
+void ServoControl_Open(void)
+{
+	TIM_SetCompare1(TIM2,2000);
+}
+void ServoControl_Close(void)
+{
+	TIM_SetCompare1(TIM2,500);
+}
