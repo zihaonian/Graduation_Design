@@ -1,5 +1,5 @@
 Dependencies for Project 'Template', Target 'Template': (DO NOT MODIFY !)
-F (.\main.c)(0x65E5F5A2)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O1 --apcs=interwork -I..\CORE -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\USER -I..\FWLIB\inc -I..\FWLIB\src -I..\SYSTEM\oled -I..\SYSTEM\usart -I..\SYSTEM\PWM -I..\SYSTEM\TIMER -I..\SYSTEM\LED -I..\SYSTEM\KEY -I..\SYSTEM\photosensitive_sensor -I..\SYSTEM\dht11 -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\SYSTEM\SGP32 -I..\Task_Schedule -I..\SYSTEM\HeatingControl -I..\SYSTEM\HumidifierControl -I..\SYSTEM\VentilationControl -I..\SYSTEM\WateringControl-I C:\Users\demo\Desktop\git_Repositories\Graduation_Design\GD_demo\USER\RTE-I D:\Keil\STM\pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-I D:\Keil\STM\pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="514" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x65E5FBA3)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O1 --apcs=interwork -I..\CORE -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\USER -I..\FWLIB\inc -I..\FWLIB\src -I..\SYSTEM\oled -I..\SYSTEM\usart -I..\SYSTEM\PWM -I..\SYSTEM\TIMER -I..\SYSTEM\LED -I..\SYSTEM\KEY -I..\SYSTEM\photosensitive_sensor -I..\SYSTEM\dht11 -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\SYSTEM\SGP32 -I..\Task_Schedule -I..\SYSTEM\HeatingControl -I..\SYSTEM\HumidifierControl -I..\SYSTEM\VentilationControl -I..\SYSTEM\WateringControl-I C:\Users\demo\Desktop\git_Repositories\Graduation_Design\GD_demo\USER\RTE-I D:\Keil\STM\pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-I D:\Keil\STM\pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="514" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (stm32f4xx.h)(0x65A7CF43)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\k_5\ARM\ARMCC\include\stdint.h)(0x5CEB79E2)
@@ -1805,42 +1805,6 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x57FC593F)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x57FC593F)
 I (..\SYSTEM\delay\delay.h)(0x55E3C15C)
 I (..\SYSTEM\sys\sys.h)(0x55E3C15C)
-F (..\SYSTEM\VentilationControl\VentilationControl.c)(0x65E5E8C0)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O1 --apcs=interwork -I..\CORE -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\USER -I..\FWLIB\inc -I..\FWLIB\src -I..\SYSTEM\oled -I..\SYSTEM\usart -I..\SYSTEM\PWM -I..\SYSTEM\TIMER -I..\SYSTEM\LED -I..\SYSTEM\KEY -I..\SYSTEM\photosensitive_sensor -I..\SYSTEM\dht11 -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\SYSTEM\SGP32 -I..\Task_Schedule -I..\SYSTEM\HeatingControl -I..\SYSTEM\HumidifierControl -I..\SYSTEM\VentilationControl -I..\SYSTEM\WateringControl-I C:\Users\demo\Desktop\git_Repositories\Graduation_Design\GD_demo\USER\RTE-I D:\Keil\STM\pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-I D:\Keil\STM\pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="514" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\ventilationcontrol.o --omf_browse ..\obj\ventilationcontrol.crf --depend ..\obj\ventilationcontrol.d)
-I (..\SYSTEM\VentilationControl\VentilationControl.h)(0x65E5E7F0)
-I (..\USER\stm32f4xx.h)(0x65A7CF43)
-I (..\CORE\core_cm4.h)(0x53C7D530)
-I (C:\Keil_v5\k_5\ARM\ARMCC\include\stdint.h)(0x5CEB79E2)
-I (..\CORE\core_cmInstr.h)(0x581CC64E)
-I (..\CORE\core_cmFunc.h)(0x581CC64E)
-I (..\CORE\core_cm4_simd.h)(0x53C7D530)
-I (..\USER\system_stm32f4xx.h)(0x53DBA499)
-I (..\USER\stm32f4xx_conf.h)(0x53DBB3CB)
-I (..\FWLIB\inc\stm32f4xx_adc.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_crc.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_dbgmcu.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_dma.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_exti.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_flash.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_gpio.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_i2c.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_iwdg.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_pwr.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_rcc.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_rtc.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_sdio.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_spi.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_syscfg.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_tim.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_usart.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_wwdg.h)(0x57FC593F)
-I (..\FWLIB\inc\misc.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_cryp.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_hash.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_rng.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_can.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_dac.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x57FC593F)
-I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x57FC593F)
 F (..\SYSTEM\WateringControl\WateringControl.c)(0x65E5E8C6)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O1 --apcs=interwork -I..\CORE -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\USER -I..\FWLIB\inc -I..\FWLIB\src -I..\SYSTEM\oled -I..\SYSTEM\usart -I..\SYSTEM\PWM -I..\SYSTEM\TIMER -I..\SYSTEM\LED -I..\SYSTEM\KEY -I..\SYSTEM\photosensitive_sensor -I..\SYSTEM\dht11 -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\SYSTEM\SGP32 -I..\Task_Schedule -I..\SYSTEM\HeatingControl -I..\SYSTEM\HumidifierControl -I..\SYSTEM\VentilationControl -I..\SYSTEM\WateringControl-I C:\Users\demo\Desktop\git_Repositories\Graduation_Design\GD_demo\USER\RTE-I D:\Keil\STM\pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-I D:\Keil\STM\pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="514" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\wateringcontrol.o --omf_browse ..\obj\wateringcontrol.crf --depend ..\obj\wateringcontrol.d)
 I (..\SYSTEM\WateringControl\WateringControl.h)(0x65E5E831)
 I (..\USER\stm32f4xx.h)(0x65A7CF43)
@@ -1877,8 +1841,8 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x57FC593F)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x57FC593F)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x57FC593F)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x57FC593F)
-F (..\SYSTEM\HeatingControl\HeatingControl.c)(0x65E5E865)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O1 --apcs=interwork -I..\CORE -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\USER -I..\FWLIB\inc -I..\FWLIB\src -I..\SYSTEM\oled -I..\SYSTEM\usart -I..\SYSTEM\PWM -I..\SYSTEM\TIMER -I..\SYSTEM\LED -I..\SYSTEM\KEY -I..\SYSTEM\photosensitive_sensor -I..\SYSTEM\dht11 -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\SYSTEM\SGP32 -I..\Task_Schedule -I..\SYSTEM\HeatingControl -I..\SYSTEM\HumidifierControl -I..\SYSTEM\VentilationControl -I..\SYSTEM\WateringControl-I C:\Users\demo\Desktop\git_Repositories\Graduation_Design\GD_demo\USER\RTE-I D:\Keil\STM\pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-I D:\Keil\STM\pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="514" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\heatingcontrol.o --omf_browse ..\obj\heatingcontrol.crf --depend ..\obj\heatingcontrol.d)
-I (..\SYSTEM\HeatingControl\HeatingControl.h)(0x65E5E878)
+F (..\SYSTEM\VentilationControl\VentilationControl.c)(0x65E5E8C0)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O1 --apcs=interwork -I..\CORE -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\USER -I..\FWLIB\inc -I..\FWLIB\src -I..\SYSTEM\oled -I..\SYSTEM\usart -I..\SYSTEM\PWM -I..\SYSTEM\TIMER -I..\SYSTEM\LED -I..\SYSTEM\KEY -I..\SYSTEM\photosensitive_sensor -I..\SYSTEM\dht11 -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\SYSTEM\SGP32 -I..\Task_Schedule -I..\SYSTEM\HeatingControl -I..\SYSTEM\HumidifierControl -I..\SYSTEM\VentilationControl -I..\SYSTEM\WateringControl-I C:\Users\demo\Desktop\git_Repositories\Graduation_Design\GD_demo\USER\RTE-I D:\Keil\STM\pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-I D:\Keil\STM\pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="514" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\ventilationcontrol.o --omf_browse ..\obj\ventilationcontrol.crf --depend ..\obj\ventilationcontrol.d)
+I (..\SYSTEM\VentilationControl\VentilationControl.h)(0x65E5E7F0)
 I (..\USER\stm32f4xx.h)(0x65A7CF43)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\k_5\ARM\ARMCC\include\stdint.h)(0x5CEB79E2)
@@ -1915,6 +1879,42 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x57FC593F)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x57FC593F)
 F (..\SYSTEM\HumidifierControl\HumidifierControl.c)(0x65E5E891)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O1 --apcs=interwork -I..\CORE -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\USER -I..\FWLIB\inc -I..\FWLIB\src -I..\SYSTEM\oled -I..\SYSTEM\usart -I..\SYSTEM\PWM -I..\SYSTEM\TIMER -I..\SYSTEM\LED -I..\SYSTEM\KEY -I..\SYSTEM\photosensitive_sensor -I..\SYSTEM\dht11 -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\SYSTEM\SGP32 -I..\Task_Schedule -I..\SYSTEM\HeatingControl -I..\SYSTEM\HumidifierControl -I..\SYSTEM\VentilationControl -I..\SYSTEM\WateringControl-I C:\Users\demo\Desktop\git_Repositories\Graduation_Design\GD_demo\USER\RTE-I D:\Keil\STM\pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-I D:\Keil\STM\pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="514" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\humidifiercontrol.o --omf_browse ..\obj\humidifiercontrol.crf --depend ..\obj\humidifiercontrol.d)
 I (..\SYSTEM\HumidifierControl\HumidifierControl.h)(0x65E5E8A4)
+I (..\USER\stm32f4xx.h)(0x65A7CF43)
+I (..\CORE\core_cm4.h)(0x53C7D530)
+I (C:\Keil_v5\k_5\ARM\ARMCC\include\stdint.h)(0x5CEB79E2)
+I (..\CORE\core_cmInstr.h)(0x581CC64E)
+I (..\CORE\core_cmFunc.h)(0x581CC64E)
+I (..\CORE\core_cm4_simd.h)(0x53C7D530)
+I (..\USER\system_stm32f4xx.h)(0x53DBA499)
+I (..\USER\stm32f4xx_conf.h)(0x53DBB3CB)
+I (..\FWLIB\inc\stm32f4xx_adc.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_crc.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_dbgmcu.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_dma.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_exti.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_flash.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_gpio.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_i2c.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_iwdg.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_pwr.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_rcc.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_rtc.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_sdio.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_spi.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_syscfg.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_tim.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_usart.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_wwdg.h)(0x57FC593F)
+I (..\FWLIB\inc\misc.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_cryp.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_hash.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_rng.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_can.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_dac.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x57FC593F)
+I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x57FC593F)
+F (..\SYSTEM\HeatingControl\HeatingControl.c)(0x65E5E865)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O1 --apcs=interwork -I..\CORE -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\USER -I..\FWLIB\inc -I..\FWLIB\src -I..\SYSTEM\oled -I..\SYSTEM\usart -I..\SYSTEM\PWM -I..\SYSTEM\TIMER -I..\SYSTEM\LED -I..\SYSTEM\KEY -I..\SYSTEM\photosensitive_sensor -I..\SYSTEM\dht11 -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\SYSTEM\SGP32 -I..\Task_Schedule -I..\SYSTEM\HeatingControl -I..\SYSTEM\HumidifierControl -I..\SYSTEM\VentilationControl -I..\SYSTEM\WateringControl-I C:\Users\demo\Desktop\git_Repositories\Graduation_Design\GD_demo\USER\RTE-I D:\Keil\STM\pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-I D:\Keil\STM\pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="514" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\heatingcontrol.o --omf_browse ..\obj\heatingcontrol.crf --depend ..\obj\heatingcontrol.d)
+I (..\SYSTEM\HeatingControl\HeatingControl.h)(0x65E5E878)
 I (..\USER\stm32f4xx.h)(0x65A7CF43)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\k_5\ARM\ARMCC\include\stdint.h)(0x5CEB79E2)

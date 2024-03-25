@@ -679,24 +679,24 @@
               <FilePath>..\SYSTEM\SGP32\sgp30.c</FilePath>
             </File>
             <File>
-              <FileName>VentilationControl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SYSTEM\VentilationControl\VentilationControl.c</FilePath>
-            </File>
-            <File>
               <FileName>WateringControl.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\WateringControl\WateringControl.c</FilePath>
             </File>
             <File>
-              <FileName>HeatingControl.c</FileName>
+              <FileName>VentilationControl.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\SYSTEM\HeatingControl\HeatingControl.c</FilePath>
+              <FilePath>..\SYSTEM\VentilationControl\VentilationControl.c</FilePath>
             </File>
             <File>
               <FileName>HumidifierControl.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\HumidifierControl\HumidifierControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>HeatingControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\HeatingControl\HeatingControl.c</FilePath>
             </File>
           </Files>
         </Group>

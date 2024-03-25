@@ -284,7 +284,7 @@
 
   <Group>
     <GroupName>CORE</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -305,7 +305,7 @@
 
   <Group>
     <GroupName>FWLIB</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -923,8 +923,8 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\SYSTEM\VentilationControl\VentilationControl.c</PathWithFileName>
-      <FilenameWithoutPath>VentilationControl.c</FilenameWithoutPath>
+      <PathWithFileName>..\SYSTEM\WateringControl\WateringControl.c</PathWithFileName>
+      <FilenameWithoutPath>WateringControl.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -936,8 +936,8 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\SYSTEM\WateringControl\WateringControl.c</PathWithFileName>
-      <FilenameWithoutPath>WateringControl.c</FilenameWithoutPath>
+      <PathWithFileName>..\SYSTEM\VentilationControl\VentilationControl.c</PathWithFileName>
+      <FilenameWithoutPath>VentilationControl.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -949,8 +949,8 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\SYSTEM\HeatingControl\HeatingControl.c</PathWithFileName>
-      <FilenameWithoutPath>HeatingControl.c</FilenameWithoutPath>
+      <PathWithFileName>..\SYSTEM\HumidifierControl\HumidifierControl.c</PathWithFileName>
+      <FilenameWithoutPath>HumidifierControl.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -962,8 +962,8 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\SYSTEM\HumidifierControl\HumidifierControl.c</PathWithFileName>
-      <FilenameWithoutPath>HumidifierControl.c</FilenameWithoutPath>
+      <PathWithFileName>..\SYSTEM\HeatingControl\HeatingControl.c</PathWithFileName>
+      <FilenameWithoutPath>HeatingControl.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
