@@ -17,7 +17,7 @@ void DHT11_Reset(void);
 u8 DHT11_CheckExist(void);
 u8 DHT11_Read_Bit(void);
 u8 DHT11_Read_Byte(void);
-u8 DHT11_Read_Data(u8 *temperature,u8 *humidity);
+u8 DHT11_Read_Data(float *temperature,float *humidity);
 u8 DHT11_Init(void);
  
 #endif

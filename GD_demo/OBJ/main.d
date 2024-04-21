@@ -46,7 +46,6 @@
 ..\obj\main.o: ..\SYSTEM\SGP32\sgp30.h
 ..\obj\main.o: ..\SYSTEM\usart\usart.h
 ..\obj\main.o: ..\SYSTEM\TIMER\timer.h
-..\obj\main.o: ..\SYSTEM\LED\led.h
 ..\obj\main.o: ..\SYSTEM\KEY\key.h
 ..\obj\main.o: ..\FreeRTOS\include\FreeRTOS.h
 ..\obj\main.o: C:\Keil_v5\k_5\ARM\ARMCC\Bin\..\include\stddef.h

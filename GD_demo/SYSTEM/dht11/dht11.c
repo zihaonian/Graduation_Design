@@ -97,7 +97,7 @@ u8 DHT11_Read_Byte(void)
 //temperature：温度值(范围：0~50℃)
 //humidity：湿度值(范围：20%~90%)
 //返回值：0 正常；1 读取失败
-u8 DHT11_Read_Data(u8 *temperature,u8 *humidity)
+u8 DHT11_Read_Data(float *temperature,float *humidity)
 {
 	//DHT11的数据格式是：5个字节，40位数据，前两位是湿度的整数和小数部分，第三、第四位是温度的整数和小数部分，最后一位是校验位
 	u8 Buf[5]; //定义一个数组来存放收到的5个字节的数组
@@ -111,8 +111,8 @@ u8 DHT11_Read_Data(u8 *temperature,u8 *humidity)
 		}
 		if((Buf[0]+Buf[1]+Buf[2]+Buf[3])==Buf[4]) //检验成功
 		{
-			*humidity=Buf[0];   //这里只显示了温湿度的整数部分
-			*temperature=Buf[2];
+			*humidity=Buf[0]+0.1*Buf[1] ;   //这里只显示了温湿度的整数部分
+			*temperature=Buf[2]+0.1*Buf[3] ;
 		}
 	}
 	else

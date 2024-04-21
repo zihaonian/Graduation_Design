@@ -24,10 +24,10 @@
 #include "DHT11.h"//PB9
 #include "pwm.h"//PA6
 #include "sgp30.h"
-//#include "myiic.h"
+
 #include "usart.h"//PA9接蓝牙RXD  PA10接蓝牙TXD
 #include "timer.h"
-#include "led.h"
+
 #include "key.h"//A1 A2 A3 A4
 #include "FreeRTOS.h"
 #include "task.h" 
@@ -39,9 +39,48 @@
 #include "WateringControl.h"
 #include "HumidifierControl.h"
 
-#define DEVICE_OPEN  	(0x00000001 << 0)					//设置设备开启掩码的位0
-#define DEVICE_CLOSE   	(0x00000001 << 1)					//设置设备关闭掩码的位1
-SemaphoreHandle_t UsartMuxSem_Handle;						//定义串口互斥量变量
+#define DEVICE_OPEN  	(0x00000001 << 0)		//设置设备开启掩码的位0
+#define DEVICE_CLOSE   	(0x00000001 << 1)		//设置设备关闭掩码的位1
+
+typedef struct
+{
+	uint32_t 	sgp30_dat ;
+	uint32_t 	CO2Data ;
+	uint16_t 	Soil_Moisture ;
+	uint16_t 	Light_Intensity ;
+	float   	temperature;
+	float  		humidity;
+}Env_Data_t;									//环境参数结构体
+
+typedef struct
+{
+	uint32_t 	MAX_CO2_Concentration ;
+	uint32_t 	MIN_CO2_Concentration ;
+	uint16_t 	MAX_Soil_Moisture ;
+	uint16_t 	MIN_Soil_Moisture ;
+	uint16_t 	MAX_Light_Intensity ;
+	uint16_t 	MIN_Light_Intensity ;
+	float   	MAX_temperature;
+	float   	MIN_temperature;
+	float  		MAX_humidity;
+	float  		MIN_humidity;
+}Env_Para_Range_t;								//环境参数结构体
+
+typedef struct
+{
+	u8	Vent_flag;
+	u8	Servo_flag;
+	u8	Humidifier_flag;
+	u8	Heating_flag;
+	u8	Watering_flag;
+}Device_status_t;								 //环境参数结构体
+
+Env_Data_t 				Env_Data_Struct			;//定义环境参数结构体变量
+Env_Para_Range_t		Env_Para_Range_Struct	;//定义环境参数范围结构体变量
+Device_status_t 		Dev_status__Struct 		;//定义设备状态结构体变量
+SemaphoreHandle_t 		UsartMuxSem_Handle		;//定义串口互斥量变量
+TaskHandle_t			OledDisplayTask_Handler	;
+
 void startTask						(void *pvParameters);
 TaskHandle_t 						StartTask_Handler;
 		
@@ -73,24 +112,19 @@ void WateringControlTask			(void *pvParameters);
 TaskHandle_t 						WateringControlTask_Handler;
 		
 void OledDisplayTask				(void *pvParameters);
-TaskHandle_t 						OledDisplayTask_Handler;
-uint16_t CO2Data = 0;
+
 int main(void)
 { 
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4);
 	delay_init(168);
 	uart_init(115200);
-	LED_Init();
-	LED_Close();
 	OLED_Init();
 	OLED_Clear();
 	DHT11_Init();
-	Adc_Init();//光敏电阻 通道5
-	Adc2_Init();//土壤湿度 通道4
-//	adc_DMA_init();
+	Adc_Init();//光敏电阻 通道5 PA5
+	Adc2_Init();//土壤湿度 通道4 PA4
 	TIM2_PWM_Init(19999,83);//舵机 PA0 500-2000
 	SGP30_Init();
-	LED_Open();
 	VentilationControl_Init();
 	WateringControl_Init();
 	HeatingControl_Init();
@@ -180,7 +214,19 @@ void startTask(void *pvParameters)
 				(void*          )NULL,  										//任务输入参数               
 				(UBaseType_t    )3,												//任务优先级       
 				(TaskHandle_t*  )&OledDisplayTask_Handler); 					//任务句柄 
-
+				
+	VentilationControl_Close();
+	ServoControl_Close();
+	HumidifierControl_Close();
+	HeatingControl_Close();
+	WateringControl_Close();
+				
+	Dev_status__Struct.Heating_flag		=0;
+	Dev_status__Struct.Humidifier_flag	=0;
+	Dev_status__Struct.Servo_flag		=0;
+	Dev_status__Struct.Vent_flag		=0;
+	Dev_status__Struct.Watering_flag	=0;
+				
 	vTaskSuspend(ManualModTask_Handler);
 	vTaskResume(AutoModeTask_Handler);   			
     vTaskDelete(StartTask_Handler); 											//删除开始任务
@@ -214,47 +260,255 @@ void UsartCommandTask(void *pvParameters)
 			{   
 				memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
 				rx_cnt = 0; 
+				xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+				printf("缓冲区已清除\n");
+				xSemaphoreGive(UsartMuxSem_Handle);
 			}							
 		}
-		vTaskDelay(200);	
+		vTaskDelay(100);	
 	}
 }	
 /*****************数据采集任务******************/
 void DataAcquisitionTask(void *pvParameters)
 {
-	uint32_t sgp30_dat = 0;
     while(1)
     {
+		Env_Data_Struct.Light_Intensity =Get_Adc(5);//采集光照强度
+		Env_Data_Struct.Soil_Moisture = Get_Adc2(4);//采集土壤湿度
+		DHT11_Read_Data(&(Env_Data_Struct.temperature),&(Env_Data_Struct.humidity));//采集温度，湿度
 		SGP30_Write(0x20,0x08);
-		sgp30_dat = SGP30_Read();
-		CO2Data = (sgp30_dat & 0xffff0000) >> 16;                                                   
-		printf("%d\n",CO2Data);
-		vTaskDelay(10000);		
+		Env_Data_Struct.sgp30_dat = SGP30_Read();//采集二氧化碳浓度
+		Env_Data_Struct.CO2Data = (Env_Data_Struct.sgp30_dat & 0xffff0000) >> 16;
+		vTaskDelay(2000);		
     }
 }
+
 /*****************自动模式任务******************/
 void AutoModeTask(void *pvParameters)
 {
-	LED_Open();
 	xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 				
-	printf("自动模式\n");
+	printf("已切换自动模式\n");
 	xSemaphoreGive(UsartMuxSem_Handle);
     while(1)
     {	
-//		memset(USART_RX_BUF,0,sizeof(USART_RX_BUF));
-//		xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
-//		printf("错误命令，手动模式不可调节传感器阈值");
-//		xSemaphoreGive(UsartMuxSem_Handle);
-//		rx_cnt = 0; 
-		vTaskDelay(200);		
+		if(strcmp((const char*)USART_RX_BUF, "1") == 0)
+		{
+			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
+			rx_cnt = 0;
+			Env_Para_Range_Struct.MAX_CO2_Concentration =0 	;
+			Env_Para_Range_Struct.MIN_CO2_Concentration =0	;
+			Env_Para_Range_Struct.MAX_humidity			=0	;
+			Env_Para_Range_Struct.MIN_humidity			=0	;
+			Env_Para_Range_Struct.MAX_Light_Intensity   =0	;
+			Env_Para_Range_Struct.MIN_Light_Intensity   =0	;
+			Env_Para_Range_Struct.MAX_Soil_Moisture		=0	;
+			Env_Para_Range_Struct.MIN_Soil_Moisture		=0	;
+			Env_Para_Range_Struct.MAX_temperature		=0	;
+			Env_Para_Range_Struct.MIN_temperature		=0	;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：正在切换至 大蒜 环境\n");
+			xSemaphoreGive(UsartMuxSem_Handle);			
+		}
+		else if(strcmp((const char*)USART_RX_BUF, "2") == 0)
+		{
+			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
+			rx_cnt = 0;
+			Env_Para_Range_Struct.MAX_CO2_Concentration =0 	;
+			Env_Para_Range_Struct.MIN_CO2_Concentration =0	;
+			Env_Para_Range_Struct.MAX_humidity			=0	;
+			Env_Para_Range_Struct.MIN_humidity			=0	;
+			Env_Para_Range_Struct.MAX_Light_Intensity   =0	;
+			Env_Para_Range_Struct.MIN_Light_Intensity   =0	;
+			Env_Para_Range_Struct.MAX_Soil_Moisture		=0	;
+			Env_Para_Range_Struct.MIN_Soil_Moisture		=0	;
+			Env_Para_Range_Struct.MAX_temperature		=0	;
+			Env_Para_Range_Struct.MIN_temperature		=0	;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：正在切换至 大蒜 环境\n");
+			xSemaphoreGive(UsartMuxSem_Handle);				
+		}
+		else if(strcmp((const char*)USART_RX_BUF, "3") == 0)
+		{
+			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
+			rx_cnt = 0;
+			Env_Para_Range_Struct.MAX_CO2_Concentration =0 	;
+			Env_Para_Range_Struct.MIN_CO2_Concentration =0	;
+			Env_Para_Range_Struct.MAX_humidity			=0	;
+			Env_Para_Range_Struct.MIN_humidity			=0	;
+			Env_Para_Range_Struct.MAX_Light_Intensity   =0	;
+			Env_Para_Range_Struct.MIN_Light_Intensity   =0	;
+			Env_Para_Range_Struct.MAX_Soil_Moisture		=0	;
+			Env_Para_Range_Struct.MIN_Soil_Moisture		=0	;
+			Env_Para_Range_Struct.MAX_temperature		=0	;
+			Env_Para_Range_Struct.MIN_temperature		=0	;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：正在切换至 大蒜 环境\n");
+			xSemaphoreGive(UsartMuxSem_Handle);				
+		}
+		else if(strcmp((const char*)USART_RX_BUF, "3") == 0)
+		{
+			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
+			rx_cnt = 0;
+			Env_Para_Range_Struct.MAX_CO2_Concentration =0 	;
+			Env_Para_Range_Struct.MIN_CO2_Concentration =0	;
+			Env_Para_Range_Struct.MAX_humidity			=0	;
+			Env_Para_Range_Struct.MIN_humidity			=0	;
+			Env_Para_Range_Struct.MAX_Light_Intensity   =0	;
+			Env_Para_Range_Struct.MIN_Light_Intensity   =0	;
+			Env_Para_Range_Struct.MAX_Soil_Moisture		=0	;
+			Env_Para_Range_Struct.MIN_Soil_Moisture		=0	;
+			Env_Para_Range_Struct.MAX_temperature		=0	;
+			Env_Para_Range_Struct.MIN_temperature		=0	;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：正在切换至 大蒜 环境\n");
+			xSemaphoreGive(UsartMuxSem_Handle);				
+		}
+//		else 
+//		{
+//			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF));
+//			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+//			printf("错误命令，手动模式不可调节传感器阈值");
+//			xSemaphoreGive(UsartMuxSem_Handle);
+//			rx_cnt = 0; 	
+//		}
+		if(Env_Data_Struct.CO2Data > Env_Para_Range_Struct.MAX_CO2_Concentration && (Dev_status__Struct.Servo_flag == 0 || Dev_status__Struct.Vent_flag == 0))
+		{
+			ServoControl_Open();//开启通风口
+			VentilationControl_Open();//开启通风扇
+			Dev_status__Struct.Servo_flag = 1;
+			Dev_status__Struct.Vent_flag  = 1;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：二氧化碳浓度过高，已开启 通风扇与通风口\n");
+			xSemaphoreGive(UsartMuxSem_Handle);				
+		}
+		else if(Env_Data_Struct.CO2Data < Env_Para_Range_Struct.MIN_CO2_Concentration && (Dev_status__Struct.Servo_flag == 1 || Dev_status__Struct.Vent_flag == 1))
+		{
+			ServoControl_Close();//关闭通风口
+			VentilationControl_Close();//关闭通风扇
+			Dev_status__Struct.Servo_flag = 0;
+			Dev_status__Struct.Vent_flag  = 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：二氧化碳浓度过低，已关闭 通风扇与通风口\n");
+			xSemaphoreGive(UsartMuxSem_Handle);	
+		}
+		else if(Dev_status__Struct.Servo_flag == 0 || Dev_status__Struct.Vent_flag == 1)
+		{
+			ServoControl_Open();//开启通风口
+			VentilationControl_Close();//关闭通风扇
+			Dev_status__Struct.Servo_flag = 1;
+			Dev_status__Struct.Vent_flag  = 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：二氧化碳浓度适宜，已关闭 通风扇与通风口\n");
+			xSemaphoreGive(UsartMuxSem_Handle);	
+		}
+		
+		if((Env_Data_Struct.humidity > Env_Para_Range_Struct.MAX_humidity) && (Dev_status__Struct.Humidifier_flag == 1))
+		{
+			HumidifierControl_Close();//关闭加湿器
+			Dev_status__Struct.Humidifier_flag  = 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：空气湿度过高，已关闭 加湿器 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);				
+		}
+		else if((Env_Data_Struct.humidity < Env_Para_Range_Struct.MIN_humidity) && (Dev_status__Struct.Humidifier_flag == 0))
+		{
+			HumidifierControl_Open();//开启加湿器
+			Dev_status__Struct.Humidifier_flag  = 1;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：空气湿度过低，已开启 加湿器 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);
+		}
+		else if(Dev_status__Struct.Humidifier_flag == 1)
+		{
+			HumidifierControl_Close();//关闭加湿器
+			Dev_status__Struct.Humidifier_flag  = 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：空气湿度适宜，已关闭 加湿器 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);	
+		}
+///////////////////////////待修改  光照强度		
+		if((Env_Data_Struct.Light_Intensity > Env_Para_Range_Struct.MAX_Light_Intensity) && (Dev_status__Struct.Humidifier_flag == 1))
+		{
+			HumidifierControl_Close();//关闭加湿器
+			Dev_status__Struct.Humidifier_flag  = 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：光照强度过高，已关闭 补光灯 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);				
+		}
+		else if((Env_Data_Struct.Light_Intensity < Env_Para_Range_Struct.MAX_Light_Intensity) && (Dev_status__Struct.Humidifier_flag == 0))
+		{
+			HumidifierControl_Open();//开启加湿器
+			Dev_status__Struct.Humidifier_flag  = 1;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：光照强度过低，已开启 补光灯 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);
+		}
+///////////////////////////待修改	////////////////////////////
+		
+		
+		if((Env_Data_Struct.Soil_Moisture > Env_Para_Range_Struct.MAX_Soil_Moisture) && (Dev_status__Struct.Watering_flag == 1))
+		{
+			WateringControl_Close();//关闭浇水机
+			Dev_status__Struct.Watering_flag  = 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：土壤湿度过高，已关闭 浇水机 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);				
+		}
+		else if((Env_Data_Struct.humidity < Env_Para_Range_Struct.MIN_humidity) && (Dev_status__Struct.Humidifier_flag == 0))
+		{
+			WateringControl_Open();//开启浇水机
+			Dev_status__Struct.Watering_flag  = 1;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：土壤湿度过低，已开启 浇水机 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);
+		}
+		else if(Dev_status__Struct.Watering_flag == 1)
+		{
+			WateringControl_Close();//关闭浇水机
+			Dev_status__Struct.Watering_flag  = 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：土壤湿度适宜，已关闭 浇水机 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);	
+		}
+
+		if((Env_Data_Struct.temperature > Env_Para_Range_Struct.MAX_temperature) && Dev_status__Struct.Servo_flag == 0 && Dev_status__Struct.Vent_flag == 1 && Dev_status__Struct.Heating_flag == 1)
+		{
+			ServoControl_Open();//开启通风口
+			VentilationControl_Open();//开启通风扇
+			HeatingControl_Close();//关闭加热器
+			Dev_status__Struct.Servo_flag 	= 1;
+			Dev_status__Struct.Vent_flag  	= 1;
+			Dev_status__Struct.Heating_flag	= 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：空气温度过高，已开启 通风扇,通风口 已关闭 加热器\n");
+			xSemaphoreGive(UsartMuxSem_Handle);				
+		}
+		else if((Env_Data_Struct.temperature < Env_Para_Range_Struct.MIN_temperature) && Dev_status__Struct.Heating_flag == 0)
+		{
+			HeatingControl_Open();//开启加热器 
+			Dev_status__Struct.Heating_flag  = 1;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：空气温度过低，已开启 加热器 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);
+		}
+		else if(Dev_status__Struct.Heating_flag == 1)
+		{
+			HeatingControl_Close();//关闭加热器
+			Dev_status__Struct.Heating_flag  = 0;
+			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
+			printf("自动模式：空气温度适宜,已关闭 加热器 \n");
+			xSemaphoreGive(UsartMuxSem_Handle);
+		}
+
+		
+		vTaskDelay(1000);		
     }
 }
 /*****************手动模式任务******************/
 void ManualModTask(void *pvParameters)
 {
-	LED_Close();
 	xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
-	printf("手动模式\n");
+	printf("已切换手动模式\n");
 	xSemaphoreGive(UsartMuxSem_Handle);	
     while(1)
     {	
@@ -318,7 +572,7 @@ void ManualModTask(void *pvParameters)
 			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
 			rx_cnt = 0; 
 		}		
-		vTaskDelay(200);	
+		vTaskDelay(100);	
     }
 }
 /*****************通风控制任务******************/
@@ -332,18 +586,19 @@ void VentilationControlTask(void *pvParameters)
 		{
 			VentilationControl_Open();
 			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
-			printf("通风机已开启\n");
+			printf("通风扇已开启\n");
 			xSemaphoreGive(UsartMuxSem_Handle);
 		}
 		if(VentilationControl_Notify == DEVICE_CLOSE)
 		{
 			VentilationControl_Close();
 			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
-			printf("通风机已关闭\n");
+			printf("通风扇已关闭\n");
 			xSemaphoreGive(UsartMuxSem_Handle);
 		}
     }
 }
+
 /*****************舵机控制任务******************/
 void ServoControlTask(void *pvParameters)
 {
@@ -390,6 +645,7 @@ void HumidifierControlTask(void *pvParameters)
 		}
     }
 }
+
 /*****************加热控制任务****************/
 void HeatingControlTask(void *pvParameters)
 {	
@@ -401,14 +657,14 @@ void HeatingControlTask(void *pvParameters)
 		{
 			HeatingControl_Open();
 			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
-			printf("加热已开启\n");
+			printf("加热器已开启\n");
 			xSemaphoreGive(UsartMuxSem_Handle);
 		}
 		if(HeatingControl_Notify == DEVICE_CLOSE)
 		{
 			HeatingControl_Close();
 			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
-			printf("加热已关闭\n");
+			printf("加热器已关闭\n");
 			xSemaphoreGive(UsartMuxSem_Handle);
 		}
     }
@@ -424,14 +680,14 @@ void WateringControlTask(void *pvParameters)
 		{
 			WateringControl_Open();
 			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
-			printf("浇水已开启\n");
+			printf("浇水机已开启\n");
 			xSemaphoreGive(UsartMuxSem_Handle);
 		}
 		if(WateringControl_Notify == DEVICE_CLOSE)
 		{
 			WateringControl_Close();
 			xSemaphoreTake(UsartMuxSem_Handle,portMAX_DELAY); 
-			printf("浇水已关闭\n");
+			printf("浇水机已关闭\n");
 			xSemaphoreGive(UsartMuxSem_Handle);
 		}
     }
@@ -446,3 +702,34 @@ void OledDisplayTask(void *pvParameters)
 
     }
 }
+
+//int main()
+//{	
+////	uint32_t sgp30_dat = 0;
+////	uint32_t CO2Data =0;
+////	uint16_t Soil_Moisture =0;
+////	uint16_t Light_Intensity =0;
+////	float temperature=0,humidity=0;
+//	Environmental_Data_t Environmental_Data_Struct;
+//	delay_init(168);
+//	SGP30_Init();
+//	uart_init(115200);
+//	DHT11_Init();
+//	Adc_Init();//光敏电阻 通道5 PA5
+//	Adc2_Init();//土壤湿度 通道4 PA4
+//	while(1)
+//	{	Environmental_Data_Struct.Light_Intensity =Get_Adc(5);
+//		Environmental_Data_Struct.Soil_Moisture = Get_Adc2(4);
+//		DHT11_Read_Data(&(Environmental_Data_Struct.temperature),&(Environmental_Data_Struct.humidity));
+//		SGP30_Write(0x20,0x08);
+//		Environmental_Data_Struct.sgp30_dat = SGP30_Read();
+//		Environmental_Data_Struct.CO2Data = (Environmental_Data_Struct.sgp30_dat & 0xffff0000) >> 16;
+//		
+//		printf("temperature %f\n",Environmental_Data_Struct.temperature);
+//		printf("humidity %f\n",Environmental_Data_Struct.humidity);
+//		printf("Light_Intensity %d\n",Environmental_Data_Struct.Light_Intensity);
+//		printf("Soil_Moisture %d\n",Environmental_Data_Struct.Soil_Moisture);
+//		delay_ms(2000);
+//	}
+//   
+//}

@@ -9,7 +9,6 @@ void SGP30_GPIO_Init(void)
 	RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOB,ENABLE);
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_Speed =  GPIO_Speed_25MHz;
 	GPIO_InitStructure.GPIO_Pin=SGP30_SDA_GPIO_PIN | SGP30_SCL_GPIO_PIN;
 	GPIO_Init(SGP30_SDA_GPIO_PORT ,&GPIO_InitStructure);
@@ -32,7 +31,7 @@ void SDA_IN(void)
 	GPIO_InitStructure.GPIO_Pin = SGP30_SDA_GPIO_PIN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(SGP30_SDA_GPIO_PORT, &GPIO_InitStructure);
 }
 
