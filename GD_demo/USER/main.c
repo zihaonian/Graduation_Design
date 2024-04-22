@@ -291,7 +291,7 @@ void AutoModeTask(void *pvParameters)
 	xSemaphoreGive(UsartMuxSem_Handle);
     while(1)
     {	
-		if(strcmp((const char*)USART_RX_BUF, "1") == 0)
+		if(strcmp((const char*)USART_RX_BUF, "checkout  ") == 0)
 		{
 			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
 			rx_cnt = 0;
@@ -309,7 +309,7 @@ void AutoModeTask(void *pvParameters)
 			printf("自动模式：正在切换至 大蒜 环境\n");
 			xSemaphoreGive(UsartMuxSem_Handle);			
 		}
-		else if(strcmp((const char*)USART_RX_BUF, "2") == 0)
+		else if(strcmp((const char*)USART_RX_BUF, "checkout  ") == 0)
 		{
 			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
 			rx_cnt = 0;
@@ -327,7 +327,7 @@ void AutoModeTask(void *pvParameters)
 			printf("自动模式：正在切换至 大蒜 环境\n");
 			xSemaphoreGive(UsartMuxSem_Handle);				
 		}
-		else if(strcmp((const char*)USART_RX_BUF, "3") == 0)
+		else if(strcmp((const char*)USART_RX_BUF, "checkout  ") == 0)
 		{
 			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
 			rx_cnt = 0;
@@ -345,7 +345,7 @@ void AutoModeTask(void *pvParameters)
 			printf("自动模式：正在切换至 大蒜 环境\n");
 			xSemaphoreGive(UsartMuxSem_Handle);				
 		}
-		else if(strcmp((const char*)USART_RX_BUF, "3") == 0)
+		else if(strcmp((const char*)USART_RX_BUF, "checkout  ") == 0)
 		{
 			memset(USART_RX_BUF,0,sizeof(USART_RX_BUF)); 
 			rx_cnt = 0;
