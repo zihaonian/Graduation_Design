@@ -252,3 +252,31 @@ xTimerStop(Swtmr1_Handle,0); //停止软件定时器 句柄 停止定时器的�
 xTimerDelete(Swtmr1_Handle,0); //删除软件定时器 句柄 删除定时器的等待时间
 ```
 
+switch auto
+switch manual
+clean
+open/close Vent
+open/close Servo
+open/close Humid
+open/close Heat
+open/close Water
+
+open/close Light
+
+checkout  XXX	串口任务
+串口任务
+串口任务
+手动控制进程
+手动控制进程
+手动控制进程
+手动控制进程
+手动控制进程
+自动控制进程	切换自动控制
+切换手动控制
+清除命令缓冲区
+打开/关闭通风扇
+打开/关闭通风口
+打开/关闭加湿器
+打开/关闭加热器
+打开/关闭浇水机
+切换XXX作物生存环境

@@ -1,0 +1,14 @@
+																				"shou dong kong zhi",\//自动控制1	   
+																				"zi dong kong zhi",\//手动控制2
+																				 "da kai feng ji",\//打开风机3
+																				 "guan bi feng ji",\//关闭风机4
+																				 "da kai tong feng",\//打开通风5
+																				 "guan bi tong feng",\//关闭通风6
+																				 "da kai jia shi",\//打开加湿7
+																				 "guan bi jia shi",\//关闭加湿8
+																				 "da kai jia re",\//打开加热7
+																				 "guan bi jia re",\//关闭加热8
+																				 "da kai jiao shui",\//打开浇水7
+																				 "guan bi jiao shui",\//关闭浇水8
+																				 "da kai bu guang",\//打开补光7
+																				 "guan bi bu guang",\//关闭补光8

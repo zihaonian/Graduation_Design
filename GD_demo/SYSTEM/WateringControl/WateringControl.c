@@ -11,6 +11,7 @@ void WateringControl_Init(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIOA,&GPIO_InitStructure);
+	GPIO_SetBits(GPIOA,GPIO_Pin_1);
 }			
 void WateringControl_Open(void)
 {

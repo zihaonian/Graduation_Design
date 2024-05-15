@@ -41,11 +41,11 @@ void SGP30_IIC_Start(void)
   SDA_OUT();
   SGP30_SDA_HIGH;
   SGP30_SCL_HIGH;
-  delay_us(20);
+  DWT_DelayUS(20);
 
 //  SGP30_SDA = 0;	//START:when CLK is high,DATA change form high to low
 	SGP30_SDA_LOW;
-  delay_us(20);
+  DWT_DelayUS(20);
 //  SGP30_SCL = 0; 	//钳住I2C总线，准备发送或接收数据
 	SGP30_SCL_LOW;
 }
@@ -58,12 +58,12 @@ void SGP30_IIC_Stop(void)
 //  SGP30_SDA = 0;	//STOP:when CLK is high DATA change form low to high
 	SGP30_SCL_LOW;
 	SGP30_SDA_LOW;
-  delay_us(20);
+  DWT_DelayUS(20);
 //  SGP30_SCL = 1;
 //  SGP30_SDA = 1;	//发送I2C总线结束信号
 	SGP30_SCL_HIGH;
 	SGP30_SDA_HIGH;
-  delay_us(20);
+  DWT_DelayUS(20);
 }
 
 //等待应答信号到来
@@ -75,10 +75,10 @@ u8 SGP30_IIC_Wait_Ack(void)
   SDA_IN();
 //  SGP30_SDA = 1;
 	SGP30_SDA_HIGH;
-  delay_us(10);
+  DWT_DelayUS(10);
 //  SGP30_SCL = 1;
 	SGP30_SCL_HIGH;
-  delay_us(10);
+  DWT_DelayUS(10);
   while(SGP30_SDA_READ())
   {
     ucErrTime++;
@@ -101,10 +101,10 @@ void SGP30_IIC_Ack(void)
   SDA_OUT();
 //  SGP30_SDA = 0;
 	SGP30_SDA_LOW;
-  delay_us(20);
+  DWT_DelayUS(20);
 //  SGP30_SCL = 1;
 	SGP30_SCL_HIGH;
-  delay_us(20);
+  DWT_DelayUS(20);
 //  SGP30_SCL = 0;
 	SGP30_SCL_LOW;
 }
@@ -117,10 +117,10 @@ void SGP30_IIC_NAck(void)
   SDA_OUT();
 //  SGP30_SDA = 1;
 	SGP30_SDA_HIGH;
-  delay_us(20);
+  DWT_DelayUS(20);
 //  SGP30_SCL = 1;
 	SGP30_SCL_HIGH;
-  delay_us(20);
+  DWT_DelayUS(20);
 //  SGP30_SCL = 0;
 	SGP30_SCL_LOW;
 }
@@ -144,15 +144,15 @@ void SGP30_IIC_Send_Byte(u8 txd)
 //      SGP30_SDA = 0;
 		SGP30_SDA_LOW;
     txd <<= 1;
-    delay_us(20);
+    DWT_DelayUS(20);
 //    SGP30_SCL = 1;
 		SGP30_SCL_HIGH;
-    delay_us(20);
+    DWT_DelayUS(20);
 //    SGP30_SCL = 0;
 		SGP30_SCL_LOW;
-    delay_us(20);
+    DWT_DelayUS(20);
   }
-  delay_us(20);
+  DWT_DelayUS(20);
 
 }
 
@@ -166,13 +166,13 @@ u16 SGP30_IIC_Read_Byte(u8 ack)
   {
 //    SGP30_SCL = 0;
 		SGP30_SCL_LOW;
-    delay_us(20);
+    DWT_DelayUS(20);
 //    SGP30_SCL = 1;
 		SGP30_SCL_HIGH;
     receive <<= 1;
     if(SGP30_SDA_READ())
       receive++;
-    delay_us(20);
+    DWT_DelayUS(20);
   }
   if (!ack)
     SGP30_IIC_NAck();//发送nACK
@@ -202,7 +202,7 @@ void SGP30_Write(u8 a, u8 b)
   SGP30_IIC_Send_Byte(b);
   SGP30_IIC_Wait_Ack();
   SGP30_IIC_Stop();
-  delay_ms(100);
+  DWT_DelayMS(100);
 }
 
 u32 SGP30_Read(void)

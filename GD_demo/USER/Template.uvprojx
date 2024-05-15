@@ -370,7 +370,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\USER;..\FWLIB\inc;..\FWLIB\src;..\SYSTEM\oled;..\SYSTEM\usart;..\SYSTEM\PWM;..\SYSTEM\TIMER;..\SYSTEM\LED;..\SYSTEM\KEY;..\SYSTEM\photosensitive_sensor;..\SYSTEM\dht11;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM4F;..\SYSTEM\SGP32;..\Task_Schedule;..\SYSTEM\HeatingControl;..\SYSTEM\HumidifierControl;..\SYSTEM\VentilationControl;..\SYSTEM\WateringControl</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\USER;..\FWLIB\inc;..\FWLIB\src;..\SYSTEM\oled;..\SYSTEM\usart;..\SYSTEM\PWM;..\SYSTEM\TIMER;..\SYSTEM\LED;..\SYSTEM\KEY;..\SYSTEM\photosensitive_sensor;..\SYSTEM\dht11;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM4F;..\SYSTEM\SGP32;..\Task_Schedule;..\SYSTEM\HeatingControl;..\SYSTEM\HumidifierControl;..\SYSTEM\VentilationControl;..\SYSTEM\WateringControl;..\SYSTEM\Fill_In_light</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -659,11 +659,6 @@
               <FilePath>..\SYSTEM\KEY\key.c</FilePath>
             </File>
             <File>
-              <FileName>oled.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SYSTEM\oled\oled.c</FilePath>
-            </File>
-            <File>
               <FileName>ADC.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\photosensitive_sensor\ADC.c</FilePath>
@@ -697,6 +692,21 @@
               <FileName>HeatingControl.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\HeatingControl\HeatingControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>Light.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\Fill_In_light\Light.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyI2C.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\oled\MyI2C.c</FilePath>
+            </File>
+            <File>
+              <FileName>OLED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\oled\OLED.c</FilePath>
             </File>
           </Files>
         </Group>

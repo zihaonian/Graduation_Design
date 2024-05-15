@@ -1,0 +1,483 @@
+C51 COMPILER V9.54   MAIN                                                                  05/06/2024 23:23:26 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN ..\obj\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\k_5\C51\BIN\C51.EXE ..\code\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\code;..\user) DEBU
+                    -G OBJECTEXTEND PRINT(.\main.lst) OBJECT(..\obj\main.obj)
+
+line level    source
+
+   1          /***************************飞音云电子****************************
+   2          **  工程名称：YS-V0.7语音识别模块驱动程序
+   3          **      CPU: STC11L08XE
+   4          **      晶振：22.1184MHZ
+   5          **      波特率：9600 bit/S
+   6          **      配套产品信息：YS-V0.7语音识别开发板
+   7          **                http://yuesheng001.taobao.com
+   8          **  作者：zdings
+   9          **  联系：751956552@qq.com
+  10          **  修改日期：2013.9.13
+  11          **  说明：普通模式：直接发语音识别
+  12          /***************************飞音云电子******************************/
+  13          #include "config.h"
+  14          /************************************************************************************/
+  15          //      nAsrStatus 用来在main主程序中表示程序运行的状态，不是LD3320芯片内部的状态寄存器
+  16          //      LD_ASR_NONE:            表示没有在作ASR识别
+  17          //      LD_ASR_RUNING：         表示LD3320正在作ASR识别中
+  18          //      LD_ASR_FOUNDOK:         表示一次识别流程结束后，有一个识别结果
+  19          //      LD_ASR_FOUNDZERO:       表示一次识别流程结束后，没有识别结果
+  20          //      LD_ASR_ERROR:           表示一次识别流程中LD3320芯片内部出现不正确的状态
+  21          /***********************************************************************************/
+  22          uint8 idata nAsrStatus=0;       
+  23          void MCU_init(); 
+  24          void ProcessInt0(); //识别处理函数
+  25          void  delay(unsigned long uldata);
+  26          void    User_handle(uint8 dat);//用户执行操作函数
+  27          void Delay200ms();
+  28          void Led_test(void);//单片机工作指示
+  29          uint8_t G0_flag=DISABLE;//运行标志，ENABLE:运行。DISABLE:禁止运行 
+  30          sbit LED=P4^2;//信号指示灯
+  31          
+  32          /***********************************************************
+  33          * 名    称： void  main(void)
+  34          * 功    能： 主函数     程序入口
+  35          * 入口参数：  
+  36          * 出口参数：
+  37          * 说    明：                                     
+  38          * 调用方法： 
+  39          **********************************************************/ 
+  40          void  main(void)
+  41          {
+  42   1              uint8 idata nAsrRes;
+  43   1              uint8 i=0;
+  44   1              Led_test();
+  45   1              MCU_init();
+  46   1              LD_Reset();
+  47   1              UartIni(); /*串口初始化*/
+  48   1              nAsrStatus = LD_ASR_NONE;               //      初始状态：没有在作ASR
+  49   1              
+  50   1              #ifdef TEST     
+                  PrintCom("一级口令：小杰\r\n"); /*text.....*/
+                      PrintCom("二级口令：1、代码测试\r\n"); /*text.....*/
+                      PrintCom("      2、开发板验证\r\n"); /*text.....*/
+                      PrintCom("      3、开灯\r\n"); /*text.....*/
+C51 COMPILER V9.54   MAIN                                                                  05/06/2024 23:23:26 PAGE 2   
+
+                      PrintCom("      4、关灯\r\n"); /*text.....*/
+                      PrintCom("  5、北京\r\n"); /*text.....*/
+                      PrintCom("      6、上海\r\n"); /*text.....*/
+                      PrintCom("      7、广州\r\n"); /*text.....*/
+                      #endif
+  60   1      
+  61   1              while(1)
+  62   1              {
+  63   2                      switch(nAsrStatus)
+  64   2                      {
+  65   3                              case LD_ASR_RUNING:
+  66   3                              case LD_ASR_ERROR:              
+  67   3                                      break;
+  68   3                              case LD_ASR_NONE:
+  69   3                              {
+  70   4                                      nAsrStatus=LD_ASR_RUNING;
+  71   4                                      if (RunASR()==0)        /*      启动一次ASR识别流程：ASR初始化，ASR添加关键词语，启动ASR运算*/
+  72   4                                      {
+  73   5                                              nAsrStatus = LD_ASR_ERROR;
+  74   5                                      }
+  75   4                                      break;
+  76   4                              }
+  77   3                              case LD_ASR_FOUNDOK: /* 一次ASR识别流程结束，去取ASR识别结果*/
+  78   3                              {                               
+  79   4                                      nAsrRes = LD_GetResult();               /*获取结果*/
+  80   4                                      User_handle(nAsrRes);//用户执行函数 
+  81   4                                      nAsrStatus = LD_ASR_NONE;
+  82   4                                      break;
+  83   4                              }
+  84   3                              case LD_ASR_FOUNDZERO:
+  85   3                              default:
+  86   3                              {
+  87   4                                      nAsrStatus = LD_ASR_NONE;
+  88   4                                      break;
+  89   4                              }
+  90   3                      }// switch                              
+  91   2              }// while
+  92   1      
+  93   1      }
+  94          /***********************************************************
+  95          * 名    称：     LED灯测试
+  96          * 功    能： 单片机是否工作指示
+  97          * 入口参数： 无 
+  98          * 出口参数：无
+  99          * 说    明：                                     
+ 100          **********************************************************/
+ 101          void Led_test(void)
+ 102          {
+ 103   1              LED=~ LED;
+ 104   1              Delay200ms();
+ 105   1              LED=~ LED;
+ 106   1              Delay200ms();
+ 107   1              LED=~ LED;
+ 108   1              Delay200ms();
+ 109   1              LED=~ LED;
+ 110   1              Delay200ms();
+ 111   1              LED=~ LED;
+ 112   1              Delay200ms();
+ 113   1              LED=~ LED;
+ 114   1      }
+ 115          /***********************************************************
+ 116          * 名    称： void MCU_init()
+C51 COMPILER V9.54   MAIN                                                                  05/06/2024 23:23:26 PAGE 3   
+
+ 117          * 功    能： 单片机初始化
+ 118          * 入口参数：  
+ 119          * 出口参数：
+ 120          * 说    明：                                     
+ 121          * 调用方法： 
+ 122          **********************************************************/ 
+ 123          void MCU_init()
+ 124          {
+ 125   1              P0 = 0xff;
+ 126   1              P1 = 0xff;
+ 127   1              P2 = 0xff;
+ 128   1              P3 = 0xff;
+ 129   1              P4 = 0xff;
+ 130   1      
+ 131   1              P1M0=0XFF;      //P1端口设置为推挽输出功能，即提高IO口驱动能力，从驱动继电器模块工作
+ 132   1              P1M1=0X00;
+ 133   1      
+ 134   1              LD_MODE = 0;            //      设置MD管脚为低，并行模式读写
+ 135   1              IE0=1;
+ 136   1              EX0=1;
+ 137   1              EA=1;
+ 138   1      }
+ 139          /***********************************************************
+ 140          * 名    称：    延时函数
+ 141          * 功    能：
+ 142          * 入口参数：  
+ 143          * 出口参数：
+ 144          * 说    明：                                     
+ 145          * 调用方法： 
+ 146          **********************************************************/ 
+ 147          void Delay200us()               //@22.1184MHz
+ 148          {
+ 149   1              unsigned char i, j;
+ 150   1              _nop_();
+ 151   1              _nop_();
+ 152   1              i = 5;
+ 153   1              j = 73;
+ 154   1              do
+ 155   1              {
+ 156   2                      while (--j);
+ 157   2              } while (--i);
+ 158   1      }
+ 159          
+ 160          void  delay(unsigned long uldata)
+ 161          {
+ 162   1              unsigned int j  =  0;
+ 163   1              unsigned int g  =  0;
+ 164   1              while(uldata--)
+ 165   1              Delay200us();
+ 166   1      }
+ 167          
+ 168          void Delay200ms()               //@22.1184MHz
+ 169          {
+ 170   1              unsigned char i, j, k;
+ 171   1      
+ 172   1              i = 17;
+ 173   1              j = 208;
+ 174   1              k = 27;
+ 175   1              do
+ 176   1              {
+ 177   2                      do
+ 178   2                      {
+C51 COMPILER V9.54   MAIN                                                                  05/06/2024 23:23:26 PAGE 4   
+
+ 179   3                              while (--k);
+ 180   3                      } while (--j);
+ 181   2              } while (--i);
+ 182   1      }
+ 183          /***********************************************************
+ 184          * 名    称： 中断处理函数
+ 185          * 功    能：
+ 186          * 入口参数：  
+ 187          * 出口参数：
+ 188          * 说    明：                                     
+ 189          * 调用方法： 
+ 190          **********************************************************/ 
+ 191          void ExtInt0Handler(void) interrupt 0  
+ 192          {       
+ 193   1              ProcessInt0();                          /*      LD3320 送出中断信号，包括ASR和播放MP3的中断，需要在中断处理函数中分别处理*/
+ 194   1      }
+ 195          /***********************************************************
+ 196          * 名    称：用户执行函数 
+ 197          * 功    能：识别成功后，执行动作可在此进行修改 
+ 198          * 入口参数： 无 
+ 199          * 出口参数：无
+ 200          * 说    明：                                     
+ 201          **********************************************************/
+ 202          void    User_handle(uint8 dat)
+ 203          {
+ 204   1           //UARTSendByte(dat);//串口识别码（十六进制）
+ 205   1                               LED=0;
+ 206   1                               switch(dat)               /*对结果执行相关操作,客户修改*/
+ 207   1                                {                                                                                                                     //串口发送1 对应干垃圾
+ 208   2                                          case CODE_g1:                       /*命令“测试”*/
+ 209   2                                                      PrintCom("switch manual"); /*text.....*/
+ 210   2      //                                              PrintCom("1\r\n"); /*text.....*/
+ 211   2      //                                              PrintCom("1\r\n"); /*text.....*/        
+ 212   2                                                                                                       break;
+ 213   2                                              case CODE_g2:    /*命令“全开”*/
+ 214   2                                                      PrintCom("switch auto"); /*text.....*/
+ 215   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 216   2      //                                              PrintCom("2\r\n"); /*text.....*/        
+ 217   2                                                                                                       break;
+ 218   2                                              case CODE_g3:           /*命令“复位”*/                                
+ 219   2                                                      PrintCom("open Vent"); /*text.....*/
+ 220   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 221   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 222   2                                                                                                              break;
+ 223   2                                              case CODE_g4:           /*命令“复位”*/                                
+ 224   2                                                      PrintCom("close Vent"); /*text.....*/
+ 225   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 226   2      //                                              PrintCom("4\r\n"); /*text.....*/        
+ 227   2                                                                                                       break;
+ 228   2                                              case CODE_g5:           /*命令“复位”*/                                
+ 229   2                                                      PrintCom("open Servo"); /*text.....*/     
+ 230   2      //                                              PrintCom("5\r\n"); /*text.....*/
+ 231   2      //                                              PrintCom("5\r\n"); /*text.....*/        
+ 232   2                                                                                                       break;
+ 233   2                                              case CODE_g6:           /*命令“复位”*/                                
+ 234   2                                                      PrintCom("close Servo"); /*text.....*/             
+ 235   2      //                                              PrintCom("6\r\n"); /*text.....*/
+ 236   2      //                                              PrintCom("6\r\n"); /*text.....*/        
+ 237   2                                                                                                       break;
+ 238   2                                              case CODE_g7:           /*命令“复位”*/                                
+ 239   2                                                      PrintCom("open Humid"); /*text.....*/    
+ 240   2      //                                              PrintCom("1\r\n"); /*text.....*/
+C51 COMPILER V9.54   MAIN                                                                  05/06/2024 23:23:26 PAGE 5   
+
+ 241   2      //                                              PrintCom("1\r\n"); /*text.....*/        
+ 242   2                                                                                                       break;
+ 243   2                                              case CODE_g8:           /*命令“复位”*/                                
+ 244   2                                                      PrintCom("close Humid"); /*text.....*/
+ 245   2      //                                              PrintCom("1\r\n"); /*text.....*/
+ 246   2      //                                              PrintCom("1\r\n"); /*text.....*/        
+ 247   2                                                                                                       break;
+ 248   2                                              case CODE_g9:           /*命令“复位”*/                                
+ 249   2                                                      PrintCom("open Heat"); /*text.....*/      
+ 250   2      //                                              PrintCom("1\r\n"); /*text.....*/
+ 251   2      //                                              PrintCom("1\r\n"); /*text.....*/        
+ 252   2                                                                                                       break;
+ 253   2                                              case CODE_g10:          /*命令“复位”*/                                
+ 254   2                                                      PrintCom("close Heat"); /*text.....*/             
+ 255   2      //                                              PrintCom("1\r\n"); /*text.....*/        
+ 256   2      //                                              PrintCom("1\r\n"); /*text.....*/        
+ 257   2                                                                                                       break;
+ 258   2                                              case CODE_g11:          /*命令“复位”*/                                
+ 259   2                                                      PrintCom("open Water"); /*text.....*/             
+ 260   2      //                                              PrintCom("1\r\n"); /*text.....*/        
+ 261   2      //                                              PrintCom("1\r\n"); /*text.....*/        
+ 262   2                                                                                                       break;                                 
+ 263   2      
+ 264   2                                                                                              
+ 265   2                                                                                                              
+ 266   2                                               case CODE_s1:                  /*命令“测试”*/                        //串口发送2 对应湿垃圾
+ 267   2                                                      PrintCom("close Water"); /*text.....*/
+ 268   2      //                                              PrintCom("2\r\n"); /*text.....*/        
+ 269   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 270   2                                                                                               break;
+ 271   2                                              case CODE_s2:    /*命令“全开”*/
+ 272   2                                                      PrintCom("open Light"); /*text.....*/
+ 273   2      //                                              PrintCom("2\r\n"); /*text.....*/                        
+ 274   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 275   2                                                                                               break;
+ 276   2                                              case CODE_s3:           /*命令“复位”*/                                
+ 277   2                                                      PrintCom("close Light"); /*text.....*/
+ 278   2      //                                              PrintCom("2\r\n"); /*text.....*/                
+ 279   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 280   2      //                                                                                       break;
+ 281   2      //                                      case CODE_s4:           /*命令“复位”*/                                
+ 282   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 283   2      //                                              PrintCom("2\r\n"); /*text.....*/                
+ 284   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 285   2      //                                                                                       break;
+ 286   2      //                                      case CODE_s5:           /*命令“复位”*/                                
+ 287   2      //                                              PrintCom("2\r\n"); /*text.....*/         
+ 288   2      //                                              PrintCom("2\r\n"); /*text.....*/                        
+ 289   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 290   2      //                                                                                       break;
+ 291   2      //                                      case CODE_s6:           /*命令“复位”*/                                
+ 292   2      //                                              PrintCom("2\r\n"); /*text.....*/                   
+ 293   2      //                                              PrintCom("2\r\n"); /*text.....*/                                
+ 294   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 295   2      //                                                                                       break;
+ 296   2      //                                      case CODE_s7:           /*命令“复位”*/                                
+ 297   2      //                                              PrintCom("2\r\n"); /*text.....*/          
+ 298   2      //                                              PrintCom("2\r\n"); /*text.....*/                        
+ 299   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 300   2      //                                                                                       break;
+ 301   2      //                                      case CODE_s8:           /*命令“复位”*/                                
+ 302   2      //                                              PrintCom("2\r\n"); /*text.....*/
+C51 COMPILER V9.54   MAIN                                                                  05/06/2024 23:23:26 PAGE 6   
+
+ 303   2      //                                              PrintCom("2\r\n"); /*text.....*/                                        
+ 304   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 305   2      //                                                                                       break;
+ 306   2      //                                      case CODE_s9:           /*命令“复位”*/                                
+ 307   2      //                                              PrintCom("2\r\n"); /*text.....*/        
+ 308   2      //                                              PrintCom("2\r\n"); /*text.....*/                                
+ 309   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 310   2      //                                                                                       break;
+ 311   2      //                                      case CODE_s10:          /*命令“复位”*/                                
+ 312   2      //                                              PrintCom("2\r\n"); /*text.....*/                   
+ 313   2      //                                              PrintCom("2\r\n"); /*text.....*/                                
+ 314   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 315   2      //                                                                                       break;
+ 316   2      //                      case CODE_s11:          /*命令“复位”*/                                
+ 317   2      //                                              PrintCom("2\r\n"); /*text.....*/                   
+ 318   2      //                                              PrintCom("2\r\n"); /*text.....*/                                
+ 319   2      //                                              PrintCom("2\r\n"); /*text.....*/
+ 320   2      //                                                                                       break;
+ 321   2      
+ 322   2      //                                      
+ 323   2      //                                       case CODE_k1:                  /*命令“测试”*/                    //串口发送3 对应有害垃圾
+ 324   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 325   2      //                                              PrintCom("3\r\n"); /*text.....*/                
+ 326   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 327   2      //                                                                                               break;
+ 328   2      //                                      case CODE_k2:    /*命令“全开”*/
+ 329   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 330   2      //                                                              PrintCom("3\r\n"); /*text.....*/                
+ 331   2      //                                                      PrintCom("3\r\n"); /*text.....*/
+ 332   2      //                                                                                               break;
+ 333   2      //                                      case CODE_k3:           /*命令“复位”*/                                
+ 334   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 335   2      //                                      PrintCom("3\r\n"); /*text.....*/                
+ 336   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 337   2      //                                                                                               break;
+ 338   2      //                                      case CODE_k4:           /*命令“复位”*/                                
+ 339   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 340   2      //                                              PrintCom("3\r\n"); /*text.....*/                                
+ 341   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 342   2      //                                                                                               break;
+ 343   2      //                                      case CODE_k5:           /*命令“复位”*/                                
+ 344   2      //                                              PrintCom("3\r\n"); /*text.....*/          
+ 345   2      //                                              PrintCom("3\r\n"); /*text.....*/                
+ 346   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 347   2      //                                                                                               break;
+ 348   2      //                                      case CODE_k6:           /*命令“复位”*/                                
+ 349   2      //                                              PrintCom("3\r\n"); /*text.....*/                   
+ 350   2      //                                              PrintCom("3\r\n"); /*text.....*/                                
+ 351   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 352   2      //                                                                                               break;
+ 353   2      //                                      case CODE_k7:           /*命令“复位”*/                                
+ 354   2      //                                              PrintCom("3\r\n"); /*text.....*/          
+ 355   2      //                                              PrintCom("3\r\n"); /*text.....*/                        
+ 356   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 357   2      //                                                                                               break;
+ 358   2      //                                      case CODE_k8:           /*命令“复位”*/                                
+ 359   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 360   2      //                                              PrintCom("3\r\n"); /*text.....*/                                        
+ 361   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 362   2      //                                                                                               break;
+ 363   2      //                                      case CODE_k9:           /*命令“复位”*/                                
+ 364   2      //                                              PrintCom("3\r\n"); /*text.....*/         
+C51 COMPILER V9.54   MAIN                                                                  05/06/2024 23:23:26 PAGE 7   
+
+ 365   2      //                                              PrintCom("3\r\n"); /*text.....*/                                
+ 366   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 367   2      //                                                                                               break;
+ 368   2      //                                      case CODE_k10:          /*命令“复位”*/                                
+ 369   2      //                                              PrintCom("3\r\n"); /*text.....*/                  
+ 370   2      //                                              PrintCom("3\r\n"); /*text.....*/                        
+ 371   2      //                                          PrintCom("3\r\n"); /*text.....*/
+ 372   2      //                                      case CODE_k11:          /*命令“复位”*/                                
+ 373   2      //                                              PrintCom("3\r\n"); /*text.....*/                  
+ 374   2      //                                              PrintCom("3\r\n"); /*text.....*/                        
+ 375   2      //                                              PrintCom("3\r\n"); /*text.....*/
+ 376   2      //                                                                                               break;                                                 
+ 377   2      
+ 378   2      
+ 379   2      
+ 380   2      
+ 381   2      //                                                      
+ 382   2      //                                      case CODE_y1:                   /*命令“测试”*/                   //串口发送4 对应可回收物
+ 383   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 384   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 385   2      //                                          PrintCom("4\r\n"); /*text.....*/
+ 386   2      //                                                              break;
+ 387   2      //                                      case CODE_y2:    /*命令“全开”*/
+ 388   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 389   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 390   2      //                                          PrintCom("4\r\n"); /*text.....*/
+ 391   2      //                                                              break;
+ 392   2      //                                      case CODE_y3:           /*命令“复位”*/                                
+ 393   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 394   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 395   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 396   2      //                                                              break;
+ 397   2      //                                      case CODE_y4:           /*命令“复位”*/                                
+ 398   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 399   2      //                                          PrintCom("4\r\n"); /*text.....*/
+ 400   2      //                                          PrintCom("4\r\n"); /*text.....*/
+ 401   2      //                                                              break;
+ 402   2      //                                      case CODE_y5:           /*命令“复位”*/                                
+ 403   2      //                                              PrintCom("4\r\n"); /*text.....*/         
+ 404   2      //                                              PrintCom("4\r\n"); /*text.....*/        
+ 405   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 406   2      //                                                              break;
+ 407   2      //                                      case CODE_y6:           /*命令“复位”*/                                
+ 408   2      //                                              PrintCom("4\r\n"); /*text.....*/                   
+ 409   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 410   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 411   2      //                                                              break;
+ 412   2      //                                      case CODE_y7:           /*命令“复位”*/                                
+ 413   2      //                                              PrintCom("4\r\n"); /*text.....*/         
+ 414   2      //                                              PrintCom("4\r\n"); /*text.....*/        
+ 415   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 416   2      //                                                              break;
+ 417   2      //                                      case CODE_y8:           /*命令“复位”*/                                
+ 418   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 419   2      //                                          PrintCom("4\r\n"); /*text.....*/
+ 420   2      //                                          PrintCom("4\r\n"); /*text.....*/
+ 421   2      //                                                              break;
+ 422   2      //                                      case CODE_y9:           /*命令“复位”*/                                
+ 423   2      //                                              PrintCom("4\r\n"); /*text.....*/          
+ 424   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 425   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 426   2      //                                                              break;
+C51 COMPILER V9.54   MAIN                                                                  05/06/2024 23:23:26 PAGE 8   
+
+ 427   2      //                                      case CODE_y10:          /*命令“复位”*/                                
+ 428   2      //                                              PrintCom("4\r\n"); /*text.....*/          
+ 429   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 430   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 431   2      //                                                              break;
+ 432   2      //                                      
+ 433   2      //                      case CODE_y11:          /*命令“复位”*/                                
+ 434   2      //                                              PrintCom("4\r\n"); /*text.....*/          
+ 435   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 436   2      //                                              PrintCom("4\r\n"); /*text.....*/
+ 437   2      //                                                              break;
+ 438   2      
+ 439   2      //                                                                                                                                                                                                                                                      
+ 440   2      //                                      default:PrintCom("请重新识别发口令\r\n"); /*text.....*/break;
+ 441   2                                              
+ 442   2                                      }       
+ 443   1                        Delay200ms();
+ 444   1                      LED=1;
+ 445   1      }        
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    450    ----
+   CONSTANT SIZE    =    160    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       9
+   IDATA SIZE       =      1       1
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

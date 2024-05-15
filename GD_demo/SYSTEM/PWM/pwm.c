@@ -92,7 +92,7 @@ void TIM2_PWM_Init(u32 arr,u32 psc)
 
 void ServoControl_Open(void)
 {
-	TIM_SetCompare1(TIM2,2000);
+	TIM_SetCompare1(TIM2,1150);
 }
 void ServoControl_Close(void)
 {

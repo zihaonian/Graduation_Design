@@ -1,6 +1,4 @@
-..\obj\oled.o: ..\SYSTEM\oled\oled.c
-..\obj\oled.o: ..\SYSTEM\oled\oled.h
-..\obj\oled.o: ..\SYSTEM\sys\sys.h
+..\obj\oled.o: ..\SYSTEM\oled\OLED.c
 ..\obj\oled.o: ..\USER\stm32f4xx.h
 ..\obj\oled.o: ..\CORE\core_cm4.h
 ..\obj\oled.o: C:\Keil_v5\k_5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -36,6 +34,8 @@
 ..\obj\oled.o: ..\FWLIB\inc\stm32f4xx_dac.h
 ..\obj\oled.o: ..\FWLIB\inc\stm32f4xx_dcmi.h
 ..\obj\oled.o: ..\FWLIB\inc\stm32f4xx_fsmc.h
-..\obj\oled.o: C:\Keil_v5\k_5\ARM\ARMCC\Bin\..\include\stdlib.h
-..\obj\oled.o: ..\SYSTEM\oled\oledfont.h
+..\obj\oled.o: ..\SYSTEM\oled\OLED.h
+..\obj\oled.o: ..\SYSTEM\sys\sys.h
+..\obj\oled.o: ..\SYSTEM\oled\OLED_Font.h
 ..\obj\oled.o: ..\SYSTEM\delay\delay.h
+..\obj\oled.o: ..\SYSTEM\oled\MyI2C.h

@@ -38,15 +38,14 @@
 ..\obj\main.o: ..\SYSTEM\sys\sys.h
 ..\obj\main.o: C:\Keil_v5\k_5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\main.o: C:\Keil_v5\k_5\ARM\ARMCC\Bin\..\include\string.h
-..\obj\main.o: ..\SYSTEM\oled\oled.h
-..\obj\main.o: C:\Keil_v5\k_5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\main.o: ..\SYSTEM\oled\MyI2C.h
+..\obj\main.o: ..\SYSTEM\oled\OLED.h
 ..\obj\main.o: ..\SYSTEM\photosensitive_sensor\ADC.h
 ..\obj\main.o: ..\SYSTEM\dht11\DHT11.h
 ..\obj\main.o: ..\SYSTEM\PWM\pwm.h
 ..\obj\main.o: ..\SYSTEM\SGP32\sgp30.h
 ..\obj\main.o: ..\SYSTEM\usart\usart.h
 ..\obj\main.o: ..\SYSTEM\TIMER\timer.h
-..\obj\main.o: ..\SYSTEM\KEY\key.h
 ..\obj\main.o: ..\FreeRTOS\include\FreeRTOS.h
 ..\obj\main.o: C:\Keil_v5\k_5\ARM\ARMCC\Bin\..\include\stddef.h
 ..\obj\main.o: ..\FreeRTOS\include\FreeRTOSConfig.h
@@ -59,7 +58,9 @@
 ..\obj\main.o: ..\FreeRTOS\include\list.h
 ..\obj\main.o: ..\FreeRTOS\include\semphr.h
 ..\obj\main.o: ..\FreeRTOS\include\queue.h
+..\obj\main.o: ..\FreeRTOS\include\timers.h
 ..\obj\main.o: ..\SYSTEM\VentilationControl\VentilationControl.h
 ..\obj\main.o: ..\SYSTEM\HeatingControl\HeatingControl.h
 ..\obj\main.o: ..\SYSTEM\WateringControl\WateringControl.h
 ..\obj\main.o: ..\SYSTEM\HumidifierControl\HumidifierControl.h
+..\obj\main.o: ..\SYSTEM\Fill_In_light\Light.h

@@ -9,9 +9,9 @@ void DHT11_Reset(void)
 	//复位DHT11的时序：主机拉低总线，延时至少18ms，然后主机拉高总线，延时20-40us，等待从机应答
 	DHT11_IO_OUT(); //复位时序是主机来完成的，所以首先设置主机IO引脚输出模式
 	DHT11_DQ_OUT=0;  //主机拉低总线
-	delay_ms(20);   //延时至少18ms
+	DWT_DelayMS(20);   //延时至少18ms
 	DHT11_DQ_OUT=1;  //主机拉高总线
-	delay_us(30);    //延时20-40us
+	DWT_DelayUS(30);    //延时20-40us
 }
 //等待DHT11的应答信号
 //返回1：未检测到DHT11的存在
@@ -28,7 +28,7 @@ u8 DHT11_CheckExist(void)
 		//DHT11_DQ_IN是从机DHT11发送主机MCU的信号，应答信号时，从机会拉低信号线，因此，如果主机收到的是高电平，那么意味着没有发送应答信号
 		//Existence<100表示：设置一个缓冲时间去等待从机发送应答，这里设置的就是100us
 		Existence++;
-		delay_us(1);
+		DWT_DelayUS(1);
 	}
 	if(Existence>=100)
 	{
@@ -40,7 +40,7 @@ u8 DHT11_CheckExist(void)
 	{
 		//!DHT11_DQ_IN表示主机接收到了应答信号，也就是主机接收到了低电平，延迟100us
 		Existence++;
-		delay_us(1);
+		DWT_DelayUS(1);
 	}
 	if(Existence>=100)
 	{
@@ -61,7 +61,7 @@ u8 DHT11_Read_Bit(void)
 	//所以设置的100us是远远大于低电平延时时间的，所以data<100这个条件在此while循环中一定为真，跳出循环的条件一定是DHT11_DQ_IN=0，也就是等待变为低电平
 	{
 		data++;
-		delay_us(1);
+		DWT_DelayUS(1);
 	}
 	data=0; //离开while循环时主机一定收到了低电平，此时DHT11_DQ_IN=0；设置data=0是为后续等待高电平做准备
 	while(!DHT11_DQ_IN&&data<100) //等待变为高电平
@@ -71,10 +71,10 @@ u8 DHT11_Read_Bit(void)
 		//				高电平1的整个发送时间是大于100us的(低电平延时12-14us，高电平延时116-118us)
 		//经分析，离开循环的条件是DHT11_DQ_IN变为高电平=1，取反等于0，为假。在低电平0的12-14us过去以后，高电平信号就会来临
 		data++;
-		delay_us(1);
+		DWT_DelayUS(1);
 	}
-	//delay_us(40) 没有这个延迟40us是无法判断是数据1还是数据0的
-	delay_us(40);//从上一个while循环出来以后，时序停留在刚刚变为高电平的瞬间，这个时候延时40us，数据0会跳过高电平，数据1会停留在高电平
+	//DWT_DelayUS(40) 没有这个延迟40us是无法判断是数据1还是数据0的
+	DWT_DelayUS(40);//从上一个while循环出来以后，时序停留在刚刚变为高电平的瞬间，这个时候延时40us，数据0会跳过高电平，数据1会停留在高电平
 	if(DHT11_DQ_IN) //这个时候根据主机读到的是1还是0设置返回值
 		return 1;
 	else
