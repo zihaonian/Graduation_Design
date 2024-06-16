@@ -337,7 +337,7 @@ void DataAcquisitionTask(void *pvParameters)
 		printf("L:%d",Env_Data_Struct.Light_Intensity);
 		printf("SM:%d\n",Env_Data_Struct.Soil_Moisture);
 		printf("CO2:%dppm\n",Env_Data_Struct.CO2Data);
-		printf("加热片:");
+		printf("Heat:");
 		if(Dev_status__Struct.Heating_flag == 1)
 		{
 			printf("ON\n");
@@ -346,7 +346,7 @@ void DataAcquisitionTask(void *pvParameters)
 		{
 			printf("OFF\n");
 		}
-		printf("通风口:");
+		printf("Vent:");
 		if(Dev_status__Struct.Servo_flag == 1)
 		{
 			printf("ON\n");
@@ -356,7 +356,7 @@ void DataAcquisitionTask(void *pvParameters)
 			printf("OFF\n");
 		}
 		
-		printf("风机:");
+		printf("Fan:");
 		if(Dev_status__Struct.Vent_flag == 1)
 		{
 			printf("ON\n");
@@ -365,7 +365,7 @@ void DataAcquisitionTask(void *pvParameters)
 		{
 			printf("OFF\n");
 		}
-		printf("加湿器:");
+		printf("Humid:");
 		if(Dev_status__Struct.Humidifier_flag == 1)
 		{
 			printf("ON\n");
@@ -375,7 +375,7 @@ void DataAcquisitionTask(void *pvParameters)
 			printf("OFF\n");
 		}
 		
-		printf("浇水机:");
+		printf("Water:");
 		if(Dev_status__Struct.Watering_flag == 1)
 		{
 			printf("ON\n");

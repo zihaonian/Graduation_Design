@@ -27,14 +27,16 @@ Project File Date:  04/30/2024
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\k_5\ARM\ARMCC\Bin'
 Build target 'Template'
-compiling pwm.c...
-..\SYSTEM\PWM\pwm.c(100): warning:  #1-D: last line of file ends without a newline
-  }
-..\SYSTEM\PWM\pwm.c: 1 warning, 0 errors
+compiling main.c...
+..\SYSTEM\delay\delay.h(14): warning:  #1295-D: Deprecated declaration DWT_Init - give arg types
+  void DWT_Init();
+..\SYSTEM\oled\OLED.h(46): warning:  #1-D: last line of file ends without a newline
+   
+main.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=34628 RO-data=4896 RW-data=248 ZI-data=22600  
+Program Size: Code=34600 RO-data=4896 RW-data=248 ZI-data=22600  
 FromELF: creating hex file...
-"..\OBJ\Template.axf" - 0 Error(s), 1 Warning(s).
+"..\OBJ\Template.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 

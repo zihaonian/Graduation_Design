@@ -1,0 +1,9 @@
+%0 Journal Article
+%T Design of automatic irrigation system for greenhouse based on LoRa technology
+%A Vu, Van Anh
+%A Cong Trinh, Dong
+%A Truvant, Tuan Christian
+%A Dang Bui, Thanh
+%J 2018 International Conference on Advanced Technologies for Communications (ATC)
+%P 72-77
+%D 2018
